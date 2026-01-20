@@ -1,0 +1,15 @@
+# Бинарные файлы
+/bin/
+url-shortener
+
+# Конфигурационные файлы
+config/local.yaml
+
+# База данных
+/storage/*.db
+storage.db
+
+# Логи и кэш
+*.log
+.vscode/
+vendor/
