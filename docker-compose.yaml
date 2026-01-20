@@ -1,0 +1,14 @@
+services:
+  url-shortener:
+    build: .
+    container_name: url-shortener-app
+    ports:
+      - '8082:8082' # port mapping
+    volumes:
+      # Dump the database to disk
+      - ./storage:/root/storage
+      # Dump config
+      - ./config/local.yaml:/root/config/local.yaml
+    environment:
+      - CONFIG_PATH=config/local.yaml
+    restart: always
