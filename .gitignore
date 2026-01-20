@@ -1,6 +1,7 @@
 # Бинарные файлы
 /bin/
-url-shortener
+/url-shortener
+/*.exe
 
 # Конфигурационные файлы
 config/local.yaml
