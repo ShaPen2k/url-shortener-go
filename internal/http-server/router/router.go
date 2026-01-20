@@ -4,9 +4,11 @@ package router
 import (
 	"log/slog"
 	"url-shortener/internal/config"
+	"url-shortener/internal/http-server/handlers/health"
 	"url-shortener/internal/http-server/handlers/redirect"
 	"url-shortener/internal/http-server/handlers/url/delete"
 	"url-shortener/internal/http-server/handlers/url/save"
+	"url-shortener/internal/http-server/middleware/ratelimit"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -30,6 +32,10 @@ func Setup(log *slog.Logger, cfg config.HTTPServer, storage Storage) *chi.Mux {
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.URLFormat)
+	r.Use(ratelimit.Limit(100)) // 100 requests max in backlog
+
+	// Health check endpoint (public, no auth)
+	r.Get("/health", health.New(log))
 
 	// Protected routes (require Basic Auth)
 	r.Route("/url", func(r chi.Router) {

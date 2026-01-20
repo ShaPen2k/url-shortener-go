@@ -94,16 +94,70 @@ go generate ./...
 
 |   Метод    | Путь           | Описание                     |    Auth    |
 | :--------: | :------------- | :--------------------------- | :--------: |
+|  **GET**   | `/health`      | Проверка здоровья сервиса    |    Нет     |
 |  **POST**  | `/url`         | Создать короткую ссылку      | Да (Basic) |
 |  **GET**   | `/{alias}`     | Редирект на оригинальный URL |    Нет     |
 | **DELETE** | `/url/{alias}` | Удалить ссылку               | Да (Basic) |
 
-### Пример запроса (POST /url)
+### Примеры запросов (curl)
+
+**1. Проверка здоровья сервиса:**
+
+```bash
+curl -X GET http://localhost:8082/health
+```
+
+**2. Создание короткой ссылки (POST /url):**
+
+```bash
+curl -X POST http://localhost:8082/url \
+  -H "Content-Type: application/json" \
+  -u myuser:mypass \
+  -d '{
+    "url": "https://google.com",
+    "alias": "google-link"
+  }'
+```
+
+**3. Редирект по alias (GET /{alias}):**
+
+```bash
+curl -X GET http://localhost:8082/google-link -L
+```
+
+**4. Удаление ссылки (DELETE /url/{alias}):**
+
+```bash
+curl -X DELETE http://localhost:8082/url/google-link \
+  -u myuser:mypass
+```
+
+**5. Автогенерация alias (без указания):**
+
+```bash
+curl -X POST http://localhost:8082/url \
+  -H "Content-Type: application/json" \
+  -u myuser:mypass \
+  -d '{
+    "url": "https://github.com"
+  }'
+```
+
+### Пример ответа (успех)
 
 ```json
 {
-	"url": "https://google.com",
-	"alias": "google-link"
+	"status": "OK",
+	"alias": "abc123"
+}
+```
+
+### Пример ответа (ошибка)
+
+```json
+{
+	"status": "Error",
+	"error": "field URL is a required field"
 }
 ```
 
